@@ -1,8 +1,10 @@
 テスト実行レポート
 ================
 
+実行時刻: ${current_datetime}
 テスト名: ${test_name}
 ユーザーID: ${user_id}
+UUID: ${test_uuid}
 実行結果: ${status}
 
 詳細: このテストは ${test_name} として実行されました。

@@ -5,16 +5,16 @@ variables:
 
 process:
   steps:
+    - name: get_datetime
+      format_str: "%Y%m%d%H%M%S"
+      store_as: current_datetime
+    - name: generate_uuid
+      store_as: test_uuid
     - name: load_template
       file_path: report_template.txt
       store_as: report_content
-    - name: funcA
-      argA: ${test_name}
-    - name: step2
-      argA: ${user_id}
-      argB: ${status}
     - name: write_output
-      output_file: sample_output.txt
+      output_file: ${current_datetime}_sample_output.txt
       content: ${report_content}
       mode: w
       store_as: output_result

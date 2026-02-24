@@ -5,7 +5,7 @@ import sys
 import os
 from functools import partial
 from test_executor import TestExecutor
-from sample_functions import funcA, step2, addition, multiply, write_output
+from sample_functions import write_output, get_datetime, generate_uuid
 from core_functions import load_template
 
 
@@ -27,11 +27,9 @@ def run_test_case(yaml_file: str, case_name: str):
         executor = TestExecutor(yaml_file)
         
         # 関数を登録
-        executor.register_function('funcA', funcA)
-        executor.register_function('step2', step2)
-        executor.register_function('addition', addition)
-        executor.register_function('multiply', multiply)
         executor.register_function('write_output', write_output)
+        executor.register_function('get_datetime', get_datetime)
+        executor.register_function('generate_uuid', generate_uuid)
         
         # ファイル置換用の関数を登録（executorを束縛）
         executor.register_function('load_template', partial(load_template, executor=executor))
