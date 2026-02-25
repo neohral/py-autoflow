@@ -130,7 +130,6 @@ class TestExecutor:
         if 'store_as' in step:
             var_name = step['store_as']
             self.variables[var_name] = result
-            print(f"  結果を変数 '{var_name}' に保存しました: {result}")
         
         return result
     
@@ -156,14 +155,13 @@ class TestExecutor:
                     print(f"[ステップ {i}] {step_name} を実行中...")
                     
                     try:
-                        result = self._execute_step(step)
-                        print(f"  ✓ 完了 (結果: {result})\n")
+                        self._execute_step(step)
+                        print(f"  ✓ 完了\n")
                     except Exception as e:
                         print(f"  ✗ エラー: {e}\n")
                         return False
             
             print("すべてのステップが正常に完了しました！")
-            print(f"最終的な変数の状態: {self.variables}")
             return True
         
         except Exception as e:
