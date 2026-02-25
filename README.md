@@ -14,25 +14,25 @@ YAML設定ファイルから関数を順番に実行するテスト自動化ツ�
 ## インストール
 
 ```bash
-pip install pyyaml
+pip install -r requirements.txt
 ```
 
 ## ファイル構成
 
 ```
 .
-├── test_executor.py       # メインツール（YAML読み込み、関数実行エンジン）
-├── core_functions.py      # コア機能（ファイル処理など）
-├── sample_functions.py    # ユーザー定義関数
-├── main.py                # 関数登録・実行スクリプト
-├── README.md              # このファイル
+├── main.py                           # テスト実行スクリプト
+├── registerFunctions.py              # 関数登録管理
+├── README.md                         # このファイル
+├── common/
+│   ├── core.py                       # コア機能（ファイル処理など）
+│   └── test_executor.py              # メインツール（YAML読み込み、関数実行エンジン）
+├── functions/
+│   └── utils.py                      # ユーティリティ関数
 └── tests/
-    ├── test_case_001/
-    │   ├── config.yaml
-    │   └── report_template.txt
-    └── test_case_002/
+    └── ex-testcase/
         ├── config.yaml
-        └── log_template.txt
+        └── report_template.txt
 ```
 
 ## 基本的な使用方法
@@ -40,21 +40,21 @@ pip install pyyaml
 ### コマンド
 
 ```bash
+# 対話的にテストケースを選択（推奨）
+python3 main.py
+
 # 特定のテストケースを実行
-python3 main.py test_case_001
+python3 main.py ex-testcase
 
 # すべてのテストケースを実行
 python3 main.py all
-
-# 使用方法を表示
-python3 main.py
 ```
 
 ## 機能追加ガイド
 
 **新しい関数をテストに追加する場合は、以下の手順を実行してください：**
 
-### ステップ1：sample_functions.py に関数を定義
+### ステップ1：functions/utils.py に関数を定義
 
 ```python
 def my_function(arg1: str, arg2: str = None, _replace_variables=None, **kwargs):
@@ -70,12 +70,14 @@ def my_function(arg1: str, arg2: str = None, _replace_variables=None, **kwargs):
     return f"result: {arg1}"
 ```
 
-### ステップ2：main.py で関数を登録
+### ステップ2：registerFunctions.py で関数を登録
 
 ```python
-from sample_functions import my_function
+from functions.utils import my_function
 
-executor.register_function('my_function', my_function)
+def register_default_functions(executor: TestExecutor):
+    # ...
+    executor.register_function('my_function', my_function)
 ```
 
 ### ステップ3：YAML で関数を使用
@@ -107,7 +109,7 @@ executor.register_function('my_function', my_function)
    読み込んだ内容を加工・変換
 
 ```python
-# sample_functions.py での実装例
+# functions/utils.py での実装例
 def process_template(file_path: str, _replace_variables=None, **kwargs):
     """
     テンプレートファイルを読み込んで処理する関数
@@ -116,7 +118,7 @@ def process_template(file_path: str, _replace_variables=None, **kwargs):
     load_templateを経由して変数置換済みの内容を取得
     """
     # この関数では処理ロジックに専念
-    # ファイル読み込みはcore.py内のload_templateに任せる
+    # ファイル読み込みはcommon/core.py内のload_templateに任せる
 
     return processed_result
 ```

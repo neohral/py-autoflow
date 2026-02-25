@@ -1,6 +1,7 @@
 """テスト自動化ツール用のサンプル関数"""
 
 import datetime
+import time
 import uuid
 
 
@@ -87,4 +88,78 @@ def write_output(output_file: str, content: str, mode: str = 'w', _replace_varia
     
     except Exception as e:
         raise Exception(f"ファイル出力エラー: {e}")
+
+
+def wait(seconds: float = None, milliseconds: float = None, _replace_variables=None, **kwargs):
+    """
+    指定時間だけ待機する関数
+    
+    Args:
+        seconds: 待機時間（秒）
+                デフォルト: None
+        milliseconds: 待機時間（ミリ秒）
+                     デフォルト: None
+                     注: secondsとmillisecondsの両方を指定した場合、両者の合計で待機
+        _replace_variables: 変数置換関数（自動渡される）
+        **kwargs: その他の引数
+        
+    Returns:
+        処理結果メッセージ
+        
+    Raises:
+        Exception: seconds/milliseconds未指定、または無効な値の場合
+    """
+    try:
+        # 待機時間の計算
+        wait_time = 0
+        
+        if seconds is not None:
+            wait_time += float(seconds)
+        
+        if milliseconds is not None:
+            wait_time += float(milliseconds) / 1000
+        
+        # どちらも指定されていない場合はエラー
+        if wait_time == 0:
+            raise ValueError("secondsまたはmillisecondsを指定してください")
+        
+        # 負の値はエラー
+        if wait_time < 0:
+            raise ValueError("待機時間は0以上である必要があります")
+        
+        # 待機を実行
+        print(f"    {wait_time}秒待機します...")
+        time.sleep(wait_time)
+        
+        print(f"    待機完了しました (wait_time={wait_time}秒)")
+        return f"wait completed: {wait_time}秒"
+    
+    except Exception as e:
+        raise Exception(f"待機エラー: {e}")
+
+
+def print_message(message: str, _replace_variables=None, **kwargs):
+    """
+    指定した文字列をコンソールに出力する関数
+    
+    Args:
+        message: 出力するメッセージ（${variable}での置換可能）
+        _replace_variables: 変数置換関数（自動渡される）
+        **kwargs: その他の引数
+        
+    Returns:
+        処理結果メッセージ
+    """
+    try:
+        # message に含まれる変数を置換
+        if _replace_variables and isinstance(message, str):
+            message = _replace_variables(message)
+        
+        # メッセージを出力
+        print(f"    {message}")
+        
+        return f"print_message completed: {message}"
+    
+    except Exception as e:
+        raise Exception(f"メッセージ出力エラー: {e}")
 
